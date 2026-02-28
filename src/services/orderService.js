@@ -9,7 +9,7 @@ exports.createOrderFromCart = async (
   shippingAddressId,
   billingAddressId,
   paymentMethod,
-  notes
+  _notes
 ) => {
   const conn = await pool.getConnection();
 

@@ -3,7 +3,7 @@
  * Catches all errors and returns consistent error responses
  */
 
-const handleError = (err, req, res, next) => {
+const handleError = (err, req, res, _next) => {
   // Log error for debugging (don't log in production or use proper logger)
   if (process.env.NODE_ENV !== 'production') {
     console.error('Error:', err);
