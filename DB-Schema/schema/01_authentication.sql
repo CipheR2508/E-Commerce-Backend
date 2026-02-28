@@ -8,13 +8,15 @@ CREATE TABLE users (
     first_name VARCHAR(100) NOT NULL,
     last_name VARCHAR(100) NOT NULL,
     phone VARCHAR(20),
+    role ENUM('customer', 'admin') DEFAULT 'customer',
     is_email_verified BOOLEAN DEFAULT FALSE,
     is_active BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     last_login TIMESTAMP NULL,
     INDEX idx_email (email),
-    INDEX idx_active (is_active)
+    INDEX idx_active (is_active),
+    INDEX idx_role (role)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 -- Password Reset Tokens Table

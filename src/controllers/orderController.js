@@ -3,6 +3,7 @@ const {
   getUserOrders,
   getOrderDetails
 } = require('../services/orderService');
+const { sendSuccess, sendError } = require('../utils/apiResponse');
 
 exports.placeOrder = async (req, res) => {
   const userId = req.user.user_id;
@@ -13,13 +14,6 @@ exports.placeOrder = async (req, res) => {
     notes
   } = req.body;
 
-  if (!shipping_address_id || !billing_address_id) {
-    return res.status(400).json({
-      success: false,
-      error: { message: 'Shipping and billing address required' }
-    });
-  }
-
   try {
     const order = await createOrderFromCart(
       userId,
@@ -29,18 +23,14 @@ exports.placeOrder = async (req, res) => {
       notes
     );
 
-    res.status(201).json({
-      success: true,
+    return sendSuccess(res, {
+      statusCode: 201,
       message: 'Order placed successfully',
       data: order
     });
-
   } catch (err) {
     if (err.message === 'CART_EMPTY') {
-      return res.status(400).json({
-        success: false,
-        error: { message: 'Cart is empty' }
-      });
+      return sendError(res, { statusCode: 400, message: 'Cart is empty' });
     }
 
     throw err;
@@ -51,26 +41,17 @@ exports.listOrders = async (req, res) => {
   const userId = req.user.user_id;
   const orders = await getUserOrders(userId);
 
-  res.json({
-    success: true,
-    data: orders
-  });
+  return sendSuccess(res, { message: 'Orders fetched', data: orders });
 };
 
 exports.getOrder = async (req, res) => {
   const userId = req.user.user_id;
-  const orderId = parseInt(req.params.order_id);
+  const orderId = parseInt(req.params.order_id, 10);
 
   const order = await getOrderDetails(userId, orderId);
   if (!order) {
-    return res.status(404).json({
-      success: false,
-      error: { message: 'Order not found' }
-    });
+    return sendError(res, { statusCode: 404, message: 'Order not found' });
   }
 
-  res.json({
-    success: true,
-    data: order
-  });
+  return sendSuccess(res, { message: 'Order fetched', data: order });
 };

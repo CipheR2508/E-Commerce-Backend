@@ -91,9 +91,9 @@ const handleError = (err, req, res, next) => {
 
   // Build response
   const response = {
-    success: false,
-    error: {
-      message: message,
+    status: 'error',
+    message,
+    data: {
       ...(errors && { details: errors }),
       ...(process.env.NODE_ENV !== 'production' && {
         stack: err.stack,
@@ -121,10 +121,9 @@ const asyncHandler = (fn) => {
  */
 const notFoundHandler = (req, res) => {
   res.status(404).json({
-    success: false,
-    error: {
-      message: `Route ${req.method} ${req.originalUrl} not found`
-    }
+    status: 'error',
+    message: `Route ${req.method} ${req.originalUrl} not found`,
+    data: null
   });
 };
 
