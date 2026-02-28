@@ -1,4 +1,5 @@
 const Joi = require('joi');
+const { sendError } = require('../utils/apiResponse');
 
 // Common validation schemas
 const schemas = {
@@ -200,13 +201,7 @@ const validate = (schemaName) => {
         message: detail.message
       }));
 
-      return res.status(400).json({
-        success: false,
-        error: {
-          message: 'Validation failed',
-          details: errorMessages
-        }
-      });
+      return sendError(res, { statusCode: 400, message: 'Validation failed', data: errorMessages });
     }
 
     // Replace req.body with validated and sanitized data
@@ -229,13 +224,7 @@ const validateQuery = (schema) => {
         message: detail.message
       }));
 
-      return res.status(400).json({
-        success: false,
-        error: {
-          message: 'Invalid query parameters',
-          details: errorMessages
-        }
-      });
+      return sendError(res, { statusCode: 400, message: 'Invalid query parameters', data: errorMessages });
     }
 
     req.query = value;
@@ -256,13 +245,7 @@ const validateParams = (schema) => {
         message: detail.message
       }));
 
-      return res.status(400).json({
-        success: false,
-        error: {
-          message: 'Invalid URL parameters',
-          details: errorMessages
-        }
-      });
+      return sendError(res, { statusCode: 400, message: 'Invalid URL parameters', data: errorMessages });
     }
 
     req.params = value;

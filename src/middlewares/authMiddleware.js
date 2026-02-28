@@ -1,13 +1,11 @@
 const jwt = require("jsonwebtoken");
+const { sendError } = require('../utils/apiResponse');
 
 exports.authenticate = (req, res, next) => {
   const authHeader = req.headers.authorization;
 
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    return res.status(401).json({
-      success: false,
-      error: { message: "Authorization required" },
-    });
+    return sendError(res, { statusCode: 401, message: 'Authorization required' });
   }
 
   const token = authHeader.split(" ")[1];
@@ -16,10 +14,7 @@ exports.authenticate = (req, res, next) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
     if (!decoded.role) {
-      return res.status(401).json({
-        success: false,
-        error: { message: "Invalid token payload" },
-      });
+      return sendError(res, { statusCode: 401, message: 'Invalid token payload' });
     }
 
     req.user = {
@@ -30,9 +25,6 @@ exports.authenticate = (req, res, next) => {
 
     next();
   } catch {
-    return res.status(401).json({
-      success: false,
-      error: { message: "Invalid or expired token" },
-    });
+    return sendError(res, { statusCode: 401, message: 'Invalid or expired token' });
   }
 };
